@@ -1,11 +1,23 @@
-#ifndef GPIO_H
+/**
+ * @file gpio.h
+ * @brief Header for GPIO driver
+ * 
+ * This module is used to create and modify instances of the gpio_t struct that represents a single GPIO pin.
+ * 
+ * @author Joshua Herer
+ * @date January 17, 2026
+ * @version 1.0
+ */
+
+ #ifndef GPIO_H
 #define GPIO_H
-#include "hal_gpio.h"
-#include <avr/io.h>
+#include "hal/gpio_ids.h"
 #include <stdbool.h>
+#include "drivers/error.h"
 
 // Enum for the modes (data direction) settings of a pin
 typedef enum {
+    GPIO_MODE_UNINITIALIZED = 0,
     GPIO_MODE_INPUT,
     GPIO_MODE_INPUT_PULLUP,
     GPIO_MODE_OUTPUT,
@@ -13,20 +25,19 @@ typedef enum {
 
 // Struct that holds the location of a certain pin
 typedef struct {
-    hal_pin_t hal_pin;
+    gpio_id_t gpio_id;
     gpio_mode_t mode;
-} gpio_pin_t;
+} gpio_t;
 
-
-// Create new pin struct
-gpio_pin_t gpio_pin_new(hal_pin_t hal_pin);
-
+// Create new gpio struct
+error_t gpio_create(gpio_t *new_gpio, gpio_id_t gpio_id, gpio_mode_t mode);
 // Set the mode (data direction) of a pin
-void gpio_pin_mode(gpio_pin_t *pin, gpio_mode_t mode);
+error_t gpio_set_mode(gpio_t *gpio, gpio_mode_t mode);
 // Read the digital state of an input pin
-bool gpio_pin_read(gpio_pin_t *pin);
+bool gpio_read(gpio_t *gpio);
+// Write a digital state to an output pin
+error_t gpio_write(gpio_t *gpio, bool state);
 // Toggle an output pin
-void gpio_pin_toggle(gpio_pin_t *pin);
-
+error_t gpio_toggle(gpio_t *gpio);
 
 #endif

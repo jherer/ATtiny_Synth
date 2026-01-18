@@ -1,0 +1,15 @@
+build/app.o
+build/error.o
+build/gpio.o
+build/hal_timer0_pwm.o
+build/hal_gpio.o
+build/hal_timer0.o
+build/hal_timer1.o
+build/hal_usi.o
+build/main.elf
+build/main.hex
+build/main.o
+build/spi.o
+build/timer.o
+.vscode/tasks.json
+.vscode/c_cpp_properties.json
