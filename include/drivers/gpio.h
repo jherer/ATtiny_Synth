@@ -26,7 +26,8 @@ typedef enum {
 // Struct that holds the location of a certain pin
 typedef struct {
     gpio_id_t gpio_id;
-    gpio_mode_t mode;
+    volatile gpio_mode_t mode;
+    volatile bool state;
 } gpio_t;
 
 // Create new gpio struct

@@ -6,6 +6,7 @@ error_t gpio_create(gpio_t *gpio, gpio_id_t gpio_id, gpio_mode_t mode) {
     *gpio = ((gpio_t) {
         .gpio_id = gpio_id,
         .mode = GPIO_MODE_UNINITIALIZED,
+        .state = false,
     });
 
     return gpio_set_mode(gpio, mode);
@@ -52,6 +53,7 @@ error_t gpio_write(gpio_t *gpio, bool state) {
     switch (gpio->mode) {
     case GPIO_MODE_OUTPUT:
             hal_gpio_write_port(gpio->gpio_id, state);
+            gpio->state = state;
         break;
     case GPIO_MODE_INPUT:
     case GPIO_MODE_INPUT_PULLUP:
@@ -66,13 +68,22 @@ error_t gpio_write(gpio_t *gpio, bool state) {
 
 // Toggle an output pin
 // If the pin is input this will toggle the pullup resistor
+// Checking the state manually can be better than using XOR for toggling
+// Because XOR is not a fully atomic operation
 error_t gpio_toggle(gpio_t *gpio) {
     if (gpio == NULL) {
         return ERROR_GPIO_NULL_POINTER;
     }
     switch (gpio->mode) {
     case GPIO_MODE_OUTPUT:
-            hal_gpio_toggle_port(gpio->gpio_id);
+        if (gpio->state == true) {
+            hal_gpio_write_port(gpio->gpio_id, false);
+            gpio->state = false;
+        } else {
+            hal_gpio_write_port(gpio->gpio_id, true);
+            gpio->state = true;
+        }
+        //hal_gpio_toggle_port(gpio->gpio_id);
         break;
     case GPIO_MODE_INPUT:
     case GPIO_MODE_INPUT_PULLUP:

@@ -21,7 +21,7 @@ CONF	= C:\Users\joshu\AppData\Local\Arduino15\packages\arduino\tools\avrdude\6.3
 # ----------------------------
 #	Files
 # ----------------------------
-APP_SRC		= src/examples/app_timer_ctc.c # CHANGE APP SOURCE HERE
+APP_SRC		= src/examples/app_soft_timer.c # CHANGE APP SOURCE HERE
 
 MAIN_SRC		= src/main.c
 SERVICES_SRC	= $(wildcard src/services/*.c)
