@@ -24,14 +24,14 @@ The code is split into modules of different abstraction levels. From most concre
 - App Layer
 
 ### Hardware Abstraction Layer (HAL)
-The HAL allows the user to configure register settings *without* needing to know where those registers are. The HAL provides functions to write the bits of a certain setting (timer prescaler, timer wave generation mode, etc.) Sometimes the bits of a certain setting can be split among two different registers, but only the HAL has to worry about that.
+The HAL allows the user to configure register settings *without* needing to know where those registers are. The HAL provides functions to write the bits of a certain setting (timer prescaler, timer wave generation mode, etc.) based on enums provided. Sometimes the bits of a certain setting can be split among two different registers, but only the HAL has to worry about that.
 
 The HAL does no policy enforcement or error checking. If you call a HAL function directly, it will do whatever you tell it, even if it creates an invalid state. The HAL itself is also stateless, since it contains no global variables.
 
 ### Driver Layer
-The driver layer enforces correct usage of the HAL. When you want to configure a certain setting, you pass an enum to the driver function, which then calls HAL functions that perform the desired action. An enum lets you use a descriptive name instead of having to remember a certain bit pattern for a given setting. This is important for portability, since different hardware may have similar capabilities but a different register layout.
+The driver layer enforces correct usage of the HAL. It does not worry about bits or registers, only semantic meaning provided by the HAL. When you want to configure a certain setting, you pass an enum to the driver function, which then calls HAL functions that perform the desired action. An enum lets you use a descriptive name instead of having to remember a certain bit pattern for a given setting. This is important for portability, since different hardware may have similar capabilities but a different register layout.
 
-For example, the driver is passed a timer mode enum, which the driver converts into wave generation mode bits, which get passed to the timer0 HAL. A different timer or a different microcontroller may not configure timer modes the same way, but they generally have similar.
+For example, the driver is passed a timer mode enum, which is passed the timer0 HAL. A different timer or a different microcontroller may not configure timer modes the same way, but they generally have similar features.
 
 If the user attempts to configure an invalid state through the driver, the driver explicitly returns an error. If the error is passed through each layer up to main, an LED will flash a certain number of times to indicate which error has occured.
 
