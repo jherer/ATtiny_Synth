@@ -5,29 +5,32 @@
 #include "sim/debug.h"
 
 
-#define WGM0_TCCR0A_MASK (1 << WGM01) | (1 << WGM00)
-#define WGM0_TCCR0B_MASK (1 << WGM02)
-#define CS0_MASK ((1 << CS02) | (1 << CS01) | (1 << CS00))
-#define COM0A_MASK (1 << COM0A1) | (1 << COM0A0)
-#define COM0B_MASK (1 << COM0B1) | (1 << COM0B0)
-
-
 // CONTROL
 
+#define MASK_WGM0_TCCR0A (1 << WGM01) | (1 << WGM00)
+#define MASK_COM0A (1 << COM0A1) | (1 << COM0A0)
+#define MASK_COM0B (1 << COM0B1) | (1 << COM0B0)
+
+
 static uint8_t _build_control_register_a(uint8_t wgm0_bits, uint8_t com0a_bits, uint8_t com0b_bits) {
-    return ((wgm0_bits << WGM00) & (WGM0_TCCR0A_MASK)) |
-            ((com0a_bits << COM0A0) & (COM0A_MASK)) |
-            ((com0b_bits << COM0B0) & (COM0B_MASK));
+    return ((wgm0_bits << WGM00) & (MASK_WGM0_TCCR0A)) |
+            ((com0a_bits << COM0A0) & (MASK_COM0A)) |
+            ((com0b_bits << COM0B0) & (MASK_COM0B));
 }
+
+
+#define MASK_WGM0_TCCR0B (1 << WGM02)
+#define MASK_CS0 ((1 << CS02) | (1 << CS01) | (1 << CS00))
 
 static uint8_t _build_control_register_b(uint8_t wgm0_bits, uint8_t cs0_bits) {
     uint8_t wgm02 = 0;
     if ((wgm0_bits & 0b100) != 0) {
         wgm02 = 1;
     }
-    return ((cs0_bits << CS00) & CS0_MASK) |
-            ((wgm02 << WGM02) & WGM0_TCCR0B_MASK);
+    return ((cs0_bits << CS00) & MASK_CS0) |
+            ((wgm02 << WGM02) & MASK_WGM0_TCCR0B);
 }
+
 
 void hal_timer0_set_control_registers(timer0_mode_t mode, timer0_clock_t clock, bool pwm_a, bool pwm_b) {
     debug_print("t0 ctrl");
@@ -105,31 +108,17 @@ void hal_timer0_set_count(uint8_t count) {
 
 // COMPARE REGISTER
 
-void hal_timer0_set_output_compare_register_a(uint8_t ocr0a_value) {
+void hal_timer0_set_output_compare_register_a(uint8_t value) {
     debug_print("t0 ocr0a");
-    OCR0A = ocr0a_value;
+    OCR0A = value;
     debug_print_dec("   OCR0A", OCR0A);
 }
 
-void hal_timer0_set_output_compare_register_b(uint8_t ocr0b_value) {
+void hal_timer0_set_output_compare_register_b(uint8_t value) {
     debug_print("t0 ocr0b");
-    OCR0B = ocr0b_value;
+    OCR0B = value;
     debug_print_dec("   OCR0B", OCR0B);
 }
-
-
-// COMPARE MODE
-
-void hal_timer0_set_compare_output_mode_A(uint8_t com0a_bits) {
-    bitwise_write_bit(&TCCR0A, COM0A0, com0a_bits & (1 << 0));
-    bitwise_write_bit(&TCCR0A, COM0A1, com0a_bits & (1 << 1));
-}
-
-void hal_timer0_set_compare_output_mode_B(uint8_t com0b_bits) {
-    bitwise_write_bit(&TCCR0A, COM0B0, com0b_bits & (1 << 0));
-    bitwise_write_bit(&TCCR0A, COM0B1, com0b_bits & (1 << 1));
-}
-
 
 // INTERRUPTS
 

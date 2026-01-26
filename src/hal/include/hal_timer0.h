@@ -22,8 +22,8 @@ uint8_t hal_timer0_get_count(void);
 void hal_timer0_set_count(uint8_t count);
 
 // COMPARE REGISTER
-void hal_timer0_set_output_compare_register_a(uint8_t ocr0a_value);
-void hal_timer0_set_output_compare_register_b(uint8_t ocr0b_value);
+void hal_timer0_set_output_compare_register_a(uint8_t value);
+void hal_timer0_set_output_compare_register_b(uint8_t value);
 
 // INTERRUPTS
 void hal_timer0_enable_interrupt_compa(bool enable);

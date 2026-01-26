@@ -29,8 +29,8 @@ error_code_t app_init(void) {
     /* Configure drivers and services here */
     ASSERT_OK(gpio_create(&state.led0, GPIO_B0, GPIO_MODE_OUTPUT));
     ASSERT_OK(timer0_init(TIMER0_MODE_NORMAL));
-    ASSERT_OK(timer0_set_callback(TIMER0_EVENT_OVERFLOW, callback0));
-    ASSERT_OK(timer0_enable_callback(TIMER0_EVENT_OVERFLOW, true));
+    ASSERT_OK(timer0_set_callback(TIMER_EVENT_OVERFLOW, callback0));
+    ASSERT_OK(timer0_enable_callback(TIMER_EVENT_OVERFLOW, true));
     ASSERT_OK(timer0_start_clock(TIMER0_CLOCK_1024));
     
     interrupts_enable();

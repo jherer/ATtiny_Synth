@@ -1,0 +1,37 @@
+#pragma once
+
+typedef enum {
+    TIMER1_MODE_NORMAL = 0,
+    TIMER1_MODE_CTC,
+    TIMER1_MODE_PWM_VARIABLE_TOP,
+    
+    NUM_TIMER1_MODES
+} timer1_mode_t;
+
+typedef enum {
+    TIMER1_CLOCK_OFF = 0,
+    TIMER1_CLOCK_1,
+    TIMER1_CLOCK_2,
+    TIMER1_CLOCK_4,
+    TIMER1_CLOCK_8,
+    TIMER1_CLOCK_16,
+    TIMER1_CLOCK_32,
+    TIMER1_CLOCK_64,
+    TIMER1_CLOCK_128,
+    TIMER1_CLOCK_256,
+    TIMER1_CLOCK_512,
+    TIMER1_CLOCK_1024,
+    TIMER1_CLOCK_2048,
+    TIMER1_CLOCK_4096,
+    TIMER1_CLOCK_8192,
+    TIMER1_CLOCK_16834,
+
+    NUM_TIMER1_CLOCKS,
+} timer1_clock_t;
+
+typedef enum {
+    TIMER1_PWM_CHANNEL_A,
+    TIMER1_PWM_CHANNEL_B,
+    
+    NUM_TIMER1_PWM_CHANNELS,
+} timer1_pwm_channel_t;

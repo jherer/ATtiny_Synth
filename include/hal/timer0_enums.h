@@ -1,5 +1,4 @@
 #pragma once
-typedef void (*timer_callback_t)(void);
 
 typedef enum {
     TIMER0_MODE_NORMAL = 0,
@@ -20,14 +19,6 @@ typedef enum {
 
     NUM_TIMER0_CLOCKS,
 } timer0_clock_t;
-
-typedef enum {
-    TIMER0_EVENT_COMPA,
-    TIMER0_EVENT_COMPB,
-    TIMER0_EVENT_OVERFLOW,
-    
-    NUM_TIMER0_EVENTS,
-} timer0_event_t;
 
 typedef enum {
     TIMER0_PWM_CHANNEL_A,

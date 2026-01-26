@@ -87,36 +87,36 @@ static error_code_t _set_pwm_duty(timer0_state_t *s, timer0_pwm_channel_t pwm_ch
     return ERROR_OK;
 }
 
-static error_code_t _set_callback(timer0_state_t *s, timer0_event_t event, timer_callback_t callback) {
+static error_code_t _set_callback(timer0_state_t *s, timer_event_t event, timer_callback_t callback) {
     switch (event) {
-    case TIMER0_EVENT_COMPA:
+    case TIMER_EVENT_COMPA:
         s->compa_callback = callback;
         break;
-    case TIMER0_EVENT_COMPB:
+    case TIMER_EVENT_COMPB:
         s->compb_callback = callback;
         break;
-    case TIMER0_EVENT_OVERFLOW:
+    case TIMER_EVENT_OVERFLOW:
         s->ovf_callback = callback;
         break;
-    case NUM_TIMER0_EVENTS:
+    case NUM_TIMER_EVENTS:
     default:
         return ERROR_TIMER0_ENUM_UNSUPPORTED;
     }
     return ERROR_OK;
 }
 
-static error_code_t _enable_callback(timer0_state_t *s, timer0_event_t event, bool enable) {
+static error_code_t _enable_callback(timer0_state_t *s, timer_event_t event, bool enable) {
     switch (event) {
-    case TIMER0_EVENT_COMPA:
+    case TIMER_EVENT_COMPA:
         hal_timer0_enable_interrupt_compa(enable);
         break;
-    case TIMER0_EVENT_COMPB:
+    case TIMER_EVENT_COMPB:
         hal_timer0_enable_interrupt_compb(enable);
         break;
-    case TIMER0_EVENT_OVERFLOW:
+    case TIMER_EVENT_OVERFLOW:
         hal_timer0_enable_interrupt_ovf(enable);
         break;
-    case NUM_TIMER0_EVENTS:
+    case NUM_TIMER_EVENTS:
     default:
         return ERROR_TIMER0_ENUM_UNSUPPORTED;
     }
@@ -144,11 +144,11 @@ static bool _is_set_top_invalid(timer0_state_t *s) {
     return !valid;
 }
 
-static bool _is_event_invalid(timer0_state_t *s, timer0_event_t event) {
+static bool _is_event_invalid(timer0_state_t *s, timer_event_t event) {
     bool variable_top = s->mode == TIMER0_MODE_CTC ||
                     s->mode == TIMER0_MODE_PWM_VARIABLE_TOP;
 
-    return variable_top && event == TIMER0_EVENT_OVERFLOW;
+    return variable_top && event == TIMER_EVENT_OVERFLOW;
 }
 
 
@@ -231,28 +231,28 @@ error_code_t timer0_pwm_set_duty(timer0_pwm_channel_t pwm_channel, uint8_t value
    return _set_pwm_duty(&state, pwm_channel, value);
 }
 
-error_code_t timer0_set_callback(timer0_event_t event, timer_callback_t callback) {
+error_code_t timer0_set_callback(timer_event_t event, timer_callback_t callback) {
     if (_is_uninitialized(&state)) {
         return ERROR_TIMER0_UNINITIALIZED;
     }
-    if ((unsigned)event >= NUM_TIMER0_EVENTS) {
+    if ((unsigned)event >= NUM_TIMER_EVENTS) {
         return ERROR_TIMER0_ENUM_UNSUPPORTED;
     }
     if (_is_event_invalid(&state, event)) {
-        return ERROR_TIMER0_EVENT_BAD_MODE;
+        return ERROR_TIMER_EVENT_BAD_MODE;
     }
     return _set_callback(&state, event, callback);
 }
 
-error_code_t timer0_enable_callback(timer0_event_t event, bool enable) {
+error_code_t timer0_enable_callback(timer_event_t event, bool enable) {
     if (_is_uninitialized(&state)) {
         return ERROR_TIMER0_UNINITIALIZED;
     }
-    if ((unsigned)event >= NUM_TIMER0_EVENTS) {
+    if ((unsigned)event >= NUM_TIMER_EVENTS) {
         return ERROR_TIMER0_ENUM_UNSUPPORTED;
     }
     if (_is_event_invalid(&state, event)) {
-        return ERROR_TIMER0_EVENT_BAD_MODE;
+        return ERROR_TIMER_EVENT_BAD_MODE;
     }
     return _enable_callback(&state, event, enable);
 }
