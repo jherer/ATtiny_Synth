@@ -12,7 +12,7 @@
 
 #include "app/app.h"
 #include "drivers/interrupts.h"
-#include "drivers/timer0.h"
+#include "drivers/timer1.h"
 #include "drivers/gpio.h"
 #include "sim/debug.h"
 
@@ -28,14 +28,14 @@ void callback0(void) {
 }
 
 error_code_t app_init(void) {
-    debug_println("Timer0 CTC mode example", DEBUG_LAYER_APP);
+    debug_println("Timer1 CTC mode example", DEBUG_LAYER_APP);
     /* Configure drivers and services here */
     ASSERT_OK(gpio_create(&state.led0, GPIO_B0, GPIO_MODE_OUTPUT));
-    ASSERT_OK(timer0_init(TIMER0_MODE_CTC));
-    ASSERT_OK(timer0_set_callback(TIMER_EVENT_COMPA, callback0));
-    ASSERT_OK(timer0_enable_callback(TIMER_EVENT_COMPA, true));
-    ASSERT_OK(timer0_set_top(100));
-    ASSERT_OK(timer0_start_clock(TIMER0_CLOCK_1024));
+    ASSERT_OK(timer1_init(TIMER1_MODE_CTC));
+    ASSERT_OK(timer1_set_callback(TIMER_EVENT_COMPA, callback0));
+    ASSERT_OK(timer1_enable_callback(TIMER_EVENT_COMPA, true));
+    ASSERT_OK(timer1_set_top(100));
+    ASSERT_OK(timer1_start_clock(TIMER1_CLOCK_1024));
     state.i = 0;
     
     interrupts_enable();
@@ -43,12 +43,12 @@ error_code_t app_init(void) {
 }
 error_code_t app_run(void) {
     /* Run the main loop of the program here */
-    ASSERT_OK(timer0_set_top(state.i));
+    ASSERT_OK(timer1_set_top(state.i));
     //ASSERT_OK(timer0_enable_callback(TIMER_EVENT_OVERFLOW, true));
     debug_println("Running", DEBUG_LAYER_APP);
     state.i += 8;
     if (state.i > 100) {
-        ASSERT_OK(timer0_cleanup());  // De-initialized timer, causing init error next call
+        ASSERT_OK(timer1_cleanup()); // De-initialized timer, causing init error next call
     }
     return ERROR_OK;
 }

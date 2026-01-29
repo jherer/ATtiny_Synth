@@ -24,24 +24,25 @@ CONF	= C:\Users\joshu\AppData\Local\Arduino15\packages\arduino\tools\avrdude\6.3
 APP_SRC		= src/app/app.c # CHANGE APP SOURCE HERE
 
 MAIN_SRC		= src/main.c
+SYSTEM_SRC		= $(wildcard src/system/*.c)
 SERVICES_SRC	= $(wildcard src/services/*.c)
-DRIVERS_SRC 	= $(wildcard src/drivers/*.c) $(wildcard src/drivers/internal/*.c)
-HAL_SRC			= $(wildcard src/hal/*.c) $(wildcard src/hal/internal/*.c)
+DRIVERS_SRC 	= $(wildcard src/drivers/*.c)
+HAL_SRC			= $(wildcard src/hal/*.c)
 SIM_SRC			= $(wildcard src/sim/*.c)
-HEADERS			= $(wildcard include/*/*.h)
 
-APP_INCLUDE		= include
-MAIN_INCLUDE	= include
-SERVICES_INCLUDE= include
-DRIVERS_INCLUDE	= include src/hal/include src/drivers/internal
-HAL_INCLUDE		= include src/hal/include src/hal/internal
-SIM_INCLUDE 	= include
+APP_INCLUDE		= include src
+MAIN_INCLUDE	= include src
+SYSTEM_INCLUDE	= include src src/hal/include
+SERVICES_INCLUDE= include src
+DRIVERS_INCLUDE	= include src src/hal/include
+HAL_INCLUDE		= include src src/hal/include
+SIM_INCLUDE 	= include src
 
 
 BUILD_DIR 	= build/mcu
 TARGET 		= $(BUILD_DIR)/firmware
 
-SRC	= $(SIM_SRC) $(HAL_SRC) $(DRIVERS_SRC) $(SERVICES_SRC) $(MAIN_SRC) $(APP_SRC)
+SRC	= $(SIM_SRC) $(HAL_SRC) $(DRIVERS_SRC) $(SERVICES_SRC) $(SYSTEM_SRC) $(MAIN_SRC) $(APP_SRC)
 OBJ	= $(SRC:src/%.c=$(BUILD_DIR)/%.o)
 
 
@@ -54,6 +55,7 @@ CFLAGS	+= -Os -std=gnu11
 
 APP_CFLAGS		= $(CFLAGS) $(APP_INCLUDE:%=-I%)
 MAIN_CFLAGS		= $(CFLAGS) $(MAIN_INCLUDE:%=-I%)
+SYSTEM_CFLAGS	= $(CFLAGS) $(SYSTEM_INCLUDE:%=-I%)
 SERVICES_CFLAGS = $(CFLAGS) $(SERVICES_INCLUDE:%=-I%)
 DRIVERS_CFLAGS	= $(CFLAGS) $(DRIVERS_INCLUDE:%=-I%)
 HAL_CFLAGS		= $(CFLAGS) $(HAL_INCLUDE:%=-I%)
@@ -87,40 +89,35 @@ $(BUILD_DIR)/app/%.o: src/app/%.c include/app/app.h
 	$(CC) $(APP_CFLAGS) -c $< -o $@
 
 # Build main
-$(BUILD_DIR)/%.o: src/%.c
+$(BUILD_DIR)/%.o: src/%.c $(wildcard include/fault/*.h)
 	@if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CC) $(MAIN_CFLAGS) -c $< -o $@
+
+# Build system
+$(BUILD_DIR)/system/%.o: src/system/%.c include/system/%.h
+	@if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(CC) $(SYSTEM_CFLAGS) -c $< -o $@
+
+# Build services
+$(BUILD_DIR)/services/%.o: src/services/%.c include/services/%.h $(wildcard include/types/*.h)
+	@if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(CC) $(SERVICES_CFLAGS) -c $< -o $@
+	
+# Build drivers
+$(BUILD_DIR)/drivers/%.o: src/drivers/%.c include/drivers/%.h $(wildcard include/types/*.h)
+	@if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(CC) $(DRIVERS_CFLAGS) -c $< -o $@
+	
+# Build HAL
+$(BUILD_DIR)/hal/%.o: src/hal/%.c src/hal/include/%.h $(wildcard include/types/*.h)
+	@if not exist "$(dir $@)" mkdir "$(dir $@)"
+	$(CC) $(HAL_CFLAGS) -c $< -o $@
 
 # Build sim
 $(BUILD_DIR)/sim/%.o: src/sim/%.c include/sim/%.h
 	@if not exist "$(dir $@)" mkdir "$(dir $@)"
 	$(CC) $(SIM_CFLAGS) -c $< -o $@
 	
-# Build services
-$(BUILD_DIR)/services/%.o: src/services/%.c include/services/%.h
-	@if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CC) $(SERVICES_CFLAGS) -c $< -o $@
-	
-# Build driver internal
-$(BUILD_DIR)/drivers/internal/%.o: src/drivers/internal/%.c src/drivers/internal/%.h
-	@if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CC) $(DRIVERS_CFLAGS) -c $< -o $@
-	
-# Build drivers
-$(BUILD_DIR)/drivers/%.o: src/drivers/%.c include/drivers/%.h
-	@if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CC) $(DRIVERS_CFLAGS) -c $< -o $@
-	
-# Build HAL
-$(BUILD_DIR)/hal/%.o: src/hal/%.c src/hal/include/%.h
-	@if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CC) $(HAL_CFLAGS) -c $< -o $@
-
-# Build HAL internal
-$(BUILD_DIR)/hal/internal/%.o: src/hal/internal/%.c src/hal/internal/*.h
-	@if not exist "$(dir $@)" mkdir "$(dir $@)"
-	$(CC) $(HAL_CFLAGS) -c $< -o $@
-
 flash:$(TARGET).hex build
 	avrdude -p $(MCU) -P $(PORT) -b $(BAUD) -c $(ISP) -U flash:w:'$<':a
 

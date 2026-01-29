@@ -2,25 +2,17 @@
 #include "platform.h"
 #include "hal_timer0.h"
 #include "bitwise.h"
+#include "hal/masks.h"
 #include "sim/debug.h"
 
 
 // CONTROL
-
-#define MASK_WGM0_TCCR0A (1 << WGM01) | (1 << WGM00)
-#define MASK_COM0A (1 << COM0A1) | (1 << COM0A0)
-#define MASK_COM0B (1 << COM0B1) | (1 << COM0B0)
-
 
 static uint8_t _build_control_register_a(uint8_t wgm0_bits, uint8_t com0a_bits, uint8_t com0b_bits) {
     return ((wgm0_bits << WGM00) & (MASK_WGM0_TCCR0A)) |
             ((com0a_bits << COM0A0) & (MASK_COM0A)) |
             ((com0b_bits << COM0B0) & (MASK_COM0B));
 }
-
-
-#define MASK_WGM0_TCCR0B (1 << WGM02)
-#define MASK_CS0 ((1 << CS02) | (1 << CS01) | (1 << CS00))
 
 static uint8_t _build_control_register_b(uint8_t wgm0_bits, uint8_t cs0_bits) {
     uint8_t wgm02 = 0;
@@ -31,56 +23,36 @@ static uint8_t _build_control_register_b(uint8_t wgm0_bits, uint8_t cs0_bits) {
             ((wgm02 << WGM02) & MASK_WGM0_TCCR0B);
 }
 
+uint8_t _get_wgm0_bits(timer0_mode_t mode) {
+    switch (mode) {
+    case TIMER0_MODE_NORMAL: return 0b000;
+    case TIMER0_MODE_CTC: return 0b010;
+    case TIMER0_MODE_PWM_FIXED_TOP: return 0b011;
+    case TIMER0_MODE_PWM_VARIABLE_TOP: return 0b111;
+    case TIMER0_NUM_MODES:
+    default: return 0b000;
+    }
+}
+
+uint8_t _get_cs0_bits(timer0_clock_t clock) {
+    switch (clock) {
+    case TIMER0_CLOCK_OFF: return 0b000;
+    case TIMER0_CLOCK_1: return 0b001;
+    case TIMER0_CLOCK_8: return 0b010;
+    case TIMER0_CLOCK_64: return 0b011;
+    case TIMER0_CLOCK_256: return 0b100;
+    case TIMER0_CLOCK_1024: return 0b101;
+    case TIMER0_NUM_CLOCKS:
+    default: return 0b000;
+    }
+}
 
 void hal_timer0_set_control_registers(timer0_mode_t mode, timer0_clock_t clock, bool pwm_a, bool pwm_b) {
-    debug_print("t0 ctrl");
-    uint8_t wgm0_bits = 0;
-    uint8_t cs0_bits = 0;
+    debug_println("t0 ctrl", DEBUG_LAYER_HAL);
+    uint8_t wgm0_bits = _get_wgm0_bits(mode);
+    uint8_t cs0_bits = _get_cs0_bits(clock);
     uint8_t com0a_bits = 0;
     uint8_t com0b_bits = 0;
-
-    switch (mode) {
-    case TIMER0_MODE_NORMAL:
-        wgm0_bits = 0b000;
-        break;
-    case TIMER0_MODE_CTC:
-        wgm0_bits = 0b010;
-        break;
-    case TIMER0_MODE_PWM_FIXED_TOP:
-        wgm0_bits = 0b011;
-        break;
-    case TIMER0_MODE_PWM_VARIABLE_TOP:
-        wgm0_bits = 0b111;
-        break;
-    case NUM_TIMER0_MODES:
-    default:
-        break;
-    }
-
-    switch (clock) {
-    case TIMER0_CLOCK_OFF:
-        cs0_bits = 0b000;
-        break;
-    case TIMER0_CLOCK_1:
-        cs0_bits = 0b001;
-        break;
-    case TIMER0_CLOCK_8:
-        cs0_bits = 0b010;
-        break;
-    case TIMER0_CLOCK_64:
-        cs0_bits = 0b011;
-        break;
-    case TIMER0_CLOCK_256:
-        cs0_bits = 0b100;
-        break;
-    case TIMER0_CLOCK_1024:
-        cs0_bits = 0b101;
-        break;
-    case NUM_TIMER0_CLOCKS:
-    default:
-        break;
-    }
-
     if (pwm_a) {
         com0a_bits = 0b10;
     }
@@ -89,9 +61,9 @@ void hal_timer0_set_control_registers(timer0_mode_t mode, timer0_clock_t clock, 
     }
 
     TCCR0A = _build_control_register_a(wgm0_bits, com0a_bits, com0b_bits);
-    debug_print_bin("   TCCR0A", TCCR0A);
+    debug_println_bin("    TCCR0A", TCCR0A, DEBUG_LAYER_HAL);
     TCCR0B = _build_control_register_b(wgm0_bits, cs0_bits);
-    debug_print_bin("   TCCR0B", TCCR0B);
+    debug_println_bin("    TCCR0B", TCCR0B, DEBUG_LAYER_HAL);
 }
 
 
@@ -102,40 +74,42 @@ uint8_t hal_timer0_get_count(void) {
 }
 
 void hal_timer0_set_count(uint8_t count) {
+    debug_println("t0 count", DEBUG_LAYER_HAL);
     TCNT0 = count;
+    debug_println_dec("    TCNT0", TCNT0, DEBUG_LAYER_HAL);
 }
 
 
 // COMPARE REGISTER
 
 void hal_timer0_set_output_compare_register_a(uint8_t value) {
-    debug_print("t0 ocr0a");
+    debug_println("t0 ocr0a", DEBUG_LAYER_HAL);
     OCR0A = value;
-    debug_print_dec("   OCR0A", OCR0A);
+    debug_println_dec("    OCR0A", OCR0A, DEBUG_LAYER_HAL);
 }
 
 void hal_timer0_set_output_compare_register_b(uint8_t value) {
-    debug_print("t0 ocr0b");
+    debug_println("t0 ocr0b", DEBUG_LAYER_HAL);
     OCR0B = value;
-    debug_print_dec("   OCR0B", OCR0B);
+    debug_println_dec("    OCR0B", OCR0B, DEBUG_LAYER_HAL);
 }
 
 // INTERRUPTS
 
 void hal_timer0_enable_interrupt_compa(bool enable) {
-    debug_print("t0 int compa");
+    debug_println("t0 int compa", DEBUG_LAYER_HAL);
     bitwise_write_bit(&TIMSK, OCIE0A, enable);
-    debug_print_bin("   TIMSK", TIMSK);
+    debug_println_bin("    TIMSK", TIMSK, DEBUG_LAYER_HAL);
 }
 
 void hal_timer0_enable_interrupt_compb(bool enable) {
-    debug_print("t0 interrupt compb");
+    debug_println("t0 interrupt compb", DEBUG_LAYER_HAL);
     bitwise_write_bit(&TIMSK, OCIE0B, enable);
-    debug_print_bin("   TIMSK", TIMSK);
+    debug_println_bin("    TIMSK", TIMSK, DEBUG_LAYER_HAL);
 }
 
 void hal_timer0_enable_interrupt_ovf(bool enable) {
-    debug_print("t0 interrupt ovf");
+    debug_println("t0 interrupt ovf", DEBUG_LAYER_HAL);
     bitwise_write_bit(&TIMSK, TOIE0, enable);
-    debug_print_bin("   TIMSK", TIMSK);
+    debug_println_bin("    TIMSK", TIMSK, DEBUG_LAYER_HAL);
 }

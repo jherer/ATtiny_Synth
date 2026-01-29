@@ -1,11 +1,9 @@
 #include "hal_timer1.h"
 #include "platform.h"
 #include "bitwise.h"
+#include "hal/masks.h"
+#include "sim/debug.h"
 
-#define MASK_CTC1 (1 << CTC1)
-#define MASK_PWM1A (1 << PWM1A)
-#define MASK_COM1A (1 << COM1A1) | (1 << COM1A0)
-#define MASK_CS1 (1 << CS13) | (1 << CS12) | (1 << CS11) | (1 << CS10)
 
 static uint8_t _build_control_register_a(bool ctc_bit, uint8_t cs1_bits, uint8_t com1a_bits, bool pwm1a_bit) {
     return ((ctc_bit << CTC1) & (MASK_CTC1)) |
@@ -19,13 +17,13 @@ static uint8_t _build_control_register_a(bool ctc_bit, uint8_t cs1_bits, uint8_t
 
 static uint8_t _build_general_control_register(uint8_t com1b_bits, bool pwm1b_bit) {
     return ((pwm1b_bit << pwm1b_bit) & (MASK_PWM1B)) |
-            ((com1b_bits << COM1B0) & (MASK_COM1B))
-    ;
+            ((com1b_bits << COM1B0) & (MASK_COM1B));
 }
 
 
 // CONTROL
 void hal_timer1_set_control_registers(timer1_mode_t mode, timer1_clock_t clock, bool pwm1a, bool pwm1b) {
+    debug_println("t1 ctrl", DEBUG_LAYER_HAL);
     uint8_t tccr1_bits = 0;
     uint8_t ctc_bit = 0;
     uint8_t com1a_bits = 0;
@@ -45,7 +43,7 @@ void hal_timer1_set_control_registers(timer1_mode_t mode, timer1_clock_t clock, 
     case TIMER1_MODE_PWM_VARIABLE_TOP:
         ctc_bit = 0;
         break;
-    case NUM_TIMER1_MODES:
+    case TIMER1_NUM_MODES:
     default:
         break;
     }
@@ -99,7 +97,7 @@ void hal_timer1_set_control_registers(timer1_mode_t mode, timer1_clock_t clock, 
     case TIMER1_CLOCK_16834:
         cs1_bits = 0b1111;
         break;
-    case NUM_TIMER1_CLOCKS:
+    case TIMER1_NUM_CLOCKS:
     default:
         break;
     }
@@ -114,7 +112,9 @@ void hal_timer1_set_control_registers(timer1_mode_t mode, timer1_clock_t clock, 
     }
 
     TCCR1 |= _build_control_register_a(ctc_bit, cs1_bits, com1a_bits, pwm1a_bit);
+    debug_println_bin("    TCCR1", TCCR1, DEBUG_LAYER_HAL);
     GTCCR |= _build_general_control_register(com1b_bits, pwm1b_bit);
+    debug_println_bin("    GTCCR", GTCCR, DEBUG_LAYER_HAL);
 }
 
 
@@ -125,34 +125,48 @@ uint8_t hal_timer1_get_count(void) {
 }
 
 void hal_timer1_set_count(uint8_t count) {
+    debug_println("t1 count", DEBUG_LAYER_HAL);
     TCNT1 = count;
+    debug_println_dec("    TCNT1", TCNT1, DEBUG_LAYER_HAL);
 }
 
 
 // COMPARE REGISTER
 
 void hal_timer1_set_output_compare_register_a(uint8_t value) {
+    debug_println("t1 ocr1a", DEBUG_LAYER_HAL);
     OCR1A = value;
+    debug_println_dec("    OCR1A", OCR1A, DEBUG_LAYER_HAL);
 }
 
 void hal_timer1_set_output_compare_register_b(uint8_t value) {
+    debug_println("t1 ocr1b", DEBUG_LAYER_HAL);
     OCR1A = value;
+    debug_println_dec("    OCR1B", OCR1B, DEBUG_LAYER_HAL);
 }
 
 void hal_timer1_set_output_compare_register_c(uint8_t value) {
+    debug_println("t1 set ocr1c", DEBUG_LAYER_HAL);
     OCR1C = value;
+    debug_println_dec("    OCR1C", OCR1C, DEBUG_LAYER_HAL);
 }
 
 
 // INTERRUPTS
 void hal_timer1_enable_interrupt_compa(bool enable) {
+    debug_println("t1 int compa", DEBUG_LAYER_HAL);
     bitwise_write_bit(&TIMSK, OCIE1A, enable);
+    debug_println_bin("    TIMSK", TIMSK, DEBUG_LAYER_HAL);
 }
 
 void hal_timer1_enable_interrupt_compb(bool enable) {
+    debug_println("t1 int compa", DEBUG_LAYER_HAL);
     bitwise_write_bit(&TIMSK, OCIE1B, enable);
+    debug_println_bin("    TIMSK", TIMSK, DEBUG_LAYER_HAL);
 }
 
 void hal_timer1_enable_interrupt_ovf(bool enable) {
+    debug_println("t1 int compa", DEBUG_LAYER_HAL);
     bitwise_write_bit(&TIMSK, TOIE1, enable);
+    debug_println_bin("    TIMSK", TIMSK, DEBUG_LAYER_HAL);
 }

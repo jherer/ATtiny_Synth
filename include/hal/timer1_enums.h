@@ -1,12 +1,19 @@
 #pragma once
+#include <stdbool.h>
 
 typedef enum {
     TIMER1_MODE_NORMAL = 0,
     TIMER1_MODE_CTC,
     TIMER1_MODE_PWM_VARIABLE_TOP,
     
-    NUM_TIMER1_MODES
+    TIMER1_NUM_MODES,
+    TIMER1_MODE_INVALID,
 } timer1_mode_t;
+
+static inline bool timer1_is_mode_valid(timer1_mode_t mode) {
+    return (unsigned)mode >= TIMER1_NUM_MODES;
+}
+
 
 typedef enum {
     TIMER1_CLOCK_OFF = 0,
@@ -26,12 +33,26 @@ typedef enum {
     TIMER1_CLOCK_8192,
     TIMER1_CLOCK_16834,
 
-    NUM_TIMER1_CLOCKS,
+    TIMER1_NUM_CLOCKS,
+    TIMER1_CLOCK_INVALID,
 } timer1_clock_t;
 
+static inline bool timer1_is_clock_valid(timer1_clock_t clock) {
+    return (unsigned)clock >= TIMER1_NUM_CLOCKS;
+}
+
+
+typedef void (*timer1_callback_t)(void);
+
 typedef enum {
-    TIMER1_PWM_CHANNEL_A,
-    TIMER1_PWM_CHANNEL_B,
+    TIMER1_EVENT_COMPA,
+    TIMER1_EVENT_COMPB,
+    TIMER1_EVENT_OVERFLOW,
     
-    NUM_TIMER1_PWM_CHANNELS,
-} timer1_pwm_channel_t;
+    TIMER1_NUM_EVENTS,
+    TIMER1_EVENT_INVALID,
+} timer1_event_t;
+
+static inline bool timer1_is_event_valid(timer1_event_t event) {
+    return (unsigned)event < TIMER1_NUM_EVENTS;
+}

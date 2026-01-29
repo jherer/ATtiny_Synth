@@ -5,6 +5,13 @@
     #include <avr/io.h>
     #include <avr/interrupt.h>
     #include <util/delay.h>
+
+    #define 
+
+
+
+
+
 #endif
 
 #ifdef HAL_SIM
@@ -14,3 +21,4 @@
         debug_delay_ms(time_ms);
     }
 #endif
+

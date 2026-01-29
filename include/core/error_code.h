@@ -24,9 +24,6 @@ typedef uint8_t error_code_t;
 #define ERROR_MODULE_TIMER1 (0x40)
 #define ERROR_MODULE_ADC (0x50)
 #define ERROR_MODULE_SPI (0x60)
+#define ERROR_MODULE_SOFT_TIMER (0x70)
 
-#define ERROR_GENERAL_FUNCTION_UNSUPPORTED (ERROR_MODULE_GENERAL | 0x02);
-
-void error_led_init(gpio_id_t gpio_id);
-void error_code_blink_forever(error_code_t code);
-void error_code_blink_once(error_code_t code);
+#define ERROR_GENERAL_FUNCTION_UNSUPPORTED (ERROR_MODULE_GENERAL | 0x02)

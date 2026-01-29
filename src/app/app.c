@@ -24,6 +24,7 @@ static app_state_t state = {0};
 
 error_code_t app_init(void) {
     /* Configure drivers and services here */
+    debug_println("App Template", DEBUG_LAYER_APP);
 
     interrupts_enable();
     return ERROR_OK;

@@ -54,6 +54,7 @@ extern uint8_t DDRB;
 // STATUS / INTERRUPTS
 
 extern uint8_t SREG;
+
 static inline void sei(void) {
     SREG |= (1 << 7);
 }

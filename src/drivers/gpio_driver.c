@@ -1,4 +1,4 @@
-#include "drivers/gpio.h"
+#include "drivers/gpio_driver.h"
 #include <stdlib.h>
 #include "hal_gpio.h"
 #include <stdlib.h>
@@ -7,10 +7,10 @@
 error_code_t gpio_create(gpio_t *gpio, gpio_id_t gpio_id, gpio_mode_t mode) {
     *gpio = ((gpio_t) {
         .gpio_id = gpio_id,
-        .mode = GPIO_MODE_UNINITIALIZED,
+        .mode = GPIO_MODE_UNINIT,
         .state = false,
     });
-    debug_print_hex("GPIO created at", gpio_id);
+    debug_println_hex("GPIO created at", gpio_id, DEBUG_LAYER_DRIVERS);
 
     return gpio_set_mode(gpio, mode);
 }
@@ -33,13 +33,13 @@ error_code_t gpio_set_mode(gpio_t *gpio, gpio_mode_t mode) {
         hal_gpio_write_port(gpio->gpio_id, 0);
         hal_gpio_write_ddr(gpio->gpio_id, 1);
         break;
-    case GPIO_MODE_UNINITIALIZED:
-        return ERROR_GPIO_UNINITIALIZED;
+    case GPIO_MODE_UNINIT:
+        return ERROR_GPIO_UNINIT;
     default:
         return ERROR_GPIO_MODE_UNSUPPORTED;
     }
     gpio->mode = mode;
-    debug_print_hex("GPIO mode set to", mode);
+    debug_println_hex("GPIO mode set to", mode, DEBUG_LAYER_DRIVERS);
     return ERROR_OK;
 }
 
@@ -62,8 +62,8 @@ error_code_t gpio_write(gpio_t *gpio, bool state) {
     case GPIO_MODE_INPUT:
     case GPIO_MODE_INPUT_PULLUP:
         return ERROR_GPIO_WRITE_INPUT;
-    case GPIO_MODE_UNINITIALIZED:
-        return ERROR_GPIO_UNINITIALIZED;
+    case GPIO_MODE_UNINIT:
+        return ERROR_GPIO_UNINIT;
     default:
         return ERROR_GPIO_MODE_UNSUPPORTED;
     }
@@ -92,8 +92,8 @@ error_code_t gpio_toggle(gpio_t *gpio) {
     case GPIO_MODE_INPUT:
     case GPIO_MODE_INPUT_PULLUP:
         return ERROR_GPIO_WRITE_INPUT;
-    case GPIO_MODE_UNINITIALIZED:
-        return ERROR_GPIO_UNINITIALIZED;
+    case GPIO_MODE_UNINIT:
+        return ERROR_GPIO_UNINIT;
     default:
         return ERROR_GPIO_MODE_UNSUPPORTED;
     }

@@ -18,8 +18,8 @@ static inline bool bitwise_read_bit(uint8_t reg, uint8_t bit_num) {
     return (reg & (1 << bit_num)) != 0;
 }
 
-static inline void bitwise_write_bit(volatile uint8_t *reg, uint8_t bit_num, bool enabled) {
-    if (enabled) {
+static inline void bitwise_write_bit(volatile uint8_t *reg, uint8_t bit_num, bool enable) {
+    if (enable) {
         *reg |= (1 << bit_num);
     } else {
         *reg &= ~(1 << bit_num);

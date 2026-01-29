@@ -27,13 +27,13 @@ typedef struct {
 static app_state_t state = {0};
 
 error_code_t app_init(void) {
+    debug_println("GPIO example", DEBUG_LAYER_APP);
     /* Configure drivers and services here */
     ASSERT_OK(gpio_create(&state.led0, GPIO_B0, GPIO_MODE_OUTPUT));
     ASSERT_OK(gpio_create(&state.led1, GPIO_B1, GPIO_MODE_INPUT));
     ASSERT_OK(gpio_create(&state.led2, GPIO_B2, GPIO_MODE_INPUT_PULLUP));
     ASSERT_OK(gpio_create(&state.led3, GPIO_B3, GPIO_MODE_OUTPUT));
-    //ASSERT_OK(gpio_write(&state.led1, 1));
-    ASSERT_OK(timer0_init(TIMER0_MODE_CTC));
+    //ASSERT_OK(gpio_write(&state.led1, 1)); // Causes init error (write input)
     interrupts_enable();
     return ERROR_OK;
 }

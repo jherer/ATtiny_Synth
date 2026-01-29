@@ -1,25 +1,24 @@
 #include "app/app.h"
-#include "drivers/error_code.h"
-#include "drivers/gpio.h"
-#include "sim/debug.h"
+#include "core/error_code.h"
+#include "system/fault.h"
 
-#define DO_ERROR_BLINK
+#define CHECK_FAULT
 
-int main() {
+int main(void) {
     error_code_t init_err = app_init();
 
-    #ifdef DO_ERROR_BLINK
+    #ifdef CHECK_FAULT
         if (init_err != ERROR_OK) {
-            error_code_blink_forever(init_err);
+            fault_panic(init_err);
         }
     #endif
 
     while (1) {
         error_code_t run_err = app_run();
         
-        #ifdef DO_ERROR_BLINK
+        #ifdef CHECK_FAULT
             if (run_err != ERROR_OK) {
-                error_code_blink_forever(run_err);
+                fault_panic(run_err);
             }
         #endif
     }

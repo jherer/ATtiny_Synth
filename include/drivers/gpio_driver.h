@@ -11,23 +11,25 @@
 
 #pragma once
 #include "hal/gpio_ids.h"
+#include "core/error_code.h"
 #include <stdbool.h>
-#include "drivers/error_code.h"
 
-#define ERROR_GPIO_UNINITIALIZED    (ERROR_MODULE_GPIO | 0x02)
+#define ERROR_GPIO_UNINIT    (ERROR_MODULE_GPIO | 0x02)
 #define ERROR_GPIO_MODE_UNSUPPORTED (ERROR_MODULE_GPIO | 0x03)
 #define ERROR_GPIO_NULL_POINTER     (ERROR_MODULE_GPIO | 0x04)
 #define ERROR_GPIO_WRITE_INPUT      (ERROR_MODULE_GPIO | 0x05)
 
 // Enum for the modes (data direction) settings of a pin
 typedef enum {
-    GPIO_MODE_UNINITIALIZED = 0,
+    GPIO_MODE_UNINIT = 0,
     GPIO_MODE_INPUT,
     GPIO_MODE_INPUT_PULLUP,
     GPIO_MODE_OUTPUT,
 
-    NUM_GPIO_MODES, // Number of GPIO modes
+    GPIO_NUM_MODES,
+    GPIO_MODE_INVALID,
 } gpio_mode_t;
+
 
 // Struct that holds the location of a certain pin
 typedef struct {
