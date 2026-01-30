@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
-#define DEBUG_PRINT_DELAY_MS 50
-#define DEBUG_YIELD_LOOP_DELAY_MS 50
+#define DEBUG_PRINT_DELAY_MS 25
+#define DEBUG_YIELD_LOOP_DELAY_MS 25
 
 typedef enum {
     DEBUG_LAYER_HAL,
@@ -32,5 +32,6 @@ void debug_println_dec(char *message, uint8_t dec, debug_layer_t layer);
 void debug_println_hex(char *message, uint8_t hex, debug_layer_t layer);
 void debug_println_title(char *message, uint8_t width, debug_layer_t layer);
 void debug_pause(char* message, debug_layer_t layer);
+char debug_query_char(char* message, debug_layer_t layer);
 void debug_delay_ms(uint32_t ms);
 void debug_yield_loop(void);

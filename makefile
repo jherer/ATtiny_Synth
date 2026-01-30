@@ -4,7 +4,7 @@ MODULES = system services drivers hal platform sim
 # SOURCES
 SRC_DIRS = $(MODULES:%=src/%)
 SRCS = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
-SRCS += src/examples/app_gpio.c # ADD APP SOURCESs
+SRCS += src/examples/app_timer1_ctc.c # ADD APP SOURCESs
 
 # INCLUDES
 INC_DIRS = $(MODULES:%=src/%/include) include

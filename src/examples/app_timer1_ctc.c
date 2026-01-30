@@ -9,7 +9,7 @@
  * @version 1.0
  */
 
-/*
+
 #include "app/app.h"
 #include "drivers/timer1_driver.h"
 #include "drivers/gpio_driver.h"
@@ -23,6 +23,7 @@ typedef struct {
 static app_state_t state = {0};
 
 void callback0(void) {
+    debug_println("HIIIII", DEBUG_LAYER_APP);
     gpio_toggle(&state.led0);
 }
 
@@ -31,8 +32,8 @@ error_code_t app_init(void) {
     // Configure drivers and services here 
     ASSERT_OK(gpio_create(&state.led0, GPIO_B0, GPIO_MODE_OUTPUT));
     ASSERT_OK(timer1_init(TIMER1_MODE_CTC));
-    ASSERT_OK(timer1_set_callback(TIMER_EVENT_COMPA, callback0));
-    ASSERT_OK(timer1_enable_callback(TIMER_EVENT_COMPA, true));
+    ASSERT_OK(timer1_set_callback(TIMER1_EVENT_COMPA, callback0));
+    ASSERT_OK(timer1_enable_callback(TIMER1_EVENT_COMPA, true));
     ASSERT_OK(timer1_set_top(100));
     ASSERT_OK(timer1_start_clock(TIMER1_CLOCK_1024));
     state.i = 0;
@@ -50,4 +51,4 @@ error_code_t app_run(void) {
         ASSERT_OK(timer1_cleanup()); // De-initialized timer, causing init error next call
     }
     return ERROR_OK;
-}*/
+}

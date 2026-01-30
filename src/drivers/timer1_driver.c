@@ -37,7 +37,7 @@ static void _set_clock(timer1_state_t *s, timer1_clock_t clock) {
 }
 
 static void _set_top(timer1_state_t *s, timer1_clock_t top) {
-    hal_timer1_set_output_compare_register_a(top);
+    hal_timer1_set_output_compare_register_c(top);
 }
 
 static void _set_pwm_channel(timer1_state_t *s, timer1_pwm_channel_t pwm_channel, bool enable) {

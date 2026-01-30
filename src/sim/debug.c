@@ -190,6 +190,30 @@ void debug_pause(char* message, debug_layer_t layer) {
     #endif
 }
 
+
+char debug_query_char(char* message, debug_layer_t layer) {
+    #ifdef SIM
+        if (_layer_is_enabled(layer)) {
+            printf(message);
+            // Read and discard all characters until the newline character is found.
+            char last_char = '\n';
+            char c;
+            while (1) {
+                c = getchar();
+                if (c == '\n' || c == '\r') {
+                    break;
+                }
+                last_char = c;
+            }
+            while (_are_keys_in_buffer()) {
+                _clear_key_buffer();
+            }
+            return last_char;
+        }
+    #endif
+    return '?';
+}
+
 void debug_yield_loop(void) {
     #ifdef SIM
         debug_delay_ms(DEBUG_YIELD_LOOP_DELAY_MS);
