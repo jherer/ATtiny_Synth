@@ -1,6 +1,6 @@
-#include "hal/hal_status.h"
-#include "platform/io.h"
-#include "platform/debug.h"
+#include <hal/hal_status.h>
+#include <platform/io.h>
+#include <platform/debug.h>
 
 uint8_t hal_status_get_sreg(void) {
     return SREG;

@@ -1,4 +1,4 @@
-#include "hal/timer1_enums.h"
+#include <hal/timer1_enums.h>
 #include <stdbool.h>
 #include <stdint.h>
 

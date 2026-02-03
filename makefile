@@ -1,15 +1,17 @@
 # Build mode: hardware (HW) or simulation (SIM)
-BUILD ?= HW
+BUILD ?= HW # Hardware build by default
+
+# Names of modules used as source and include directories
 MODULES = system services drivers hal platform
 
-# Sources
+# Source file paths
 SRC_DIRS = $(MODULES:%=src/%)
 SRCS = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
-SRCS += src/app/app.c # ADD APP SOURCESs
+SRCS += src/examples/app_soft_timer.c # ADD APP SOURCESs
 
-# Includes
-INC_DIRS = include src
-INCS = $(foreach dir, $(INC_DIRS), $(wildcard $(dir)/*.h))
+# Include directory paths
+INC_DIRS = include
+
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(OBJS:%.o=%.d)
 
@@ -106,7 +108,6 @@ run: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
 endif
-
 
 
 $(BUILD_DIR)/%.o: %.c

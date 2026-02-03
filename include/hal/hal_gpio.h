@@ -11,7 +11,7 @@
 
 #pragma once
 #include <stdbool.h>
-#include "hal/gpio_ids.h"
+#include <hal/gpio_ids.h>
 
 /* Write to a certain bit on the data direction register */
 void hal_gpio_write_ddr(gpio_id_t gpio_id, bool state);

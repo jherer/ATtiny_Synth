@@ -1,8 +1,8 @@
 #pragma once
-#include "hal/timer1_enums.h"
+#include <hal/timer1_enums.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "core/error_code.h"
+#include <core/error_code.h>
 
 #define ERROR_TIMER1_UNINIT             (ERROR_MODULE_TIMER1 | 0x01)
 #define ERROR_TIMER1_ENUM_UNSUPPORTED   (ERROR_MODULE_TIMER1 | 0x02)

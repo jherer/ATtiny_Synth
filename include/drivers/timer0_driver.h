@@ -1,8 +1,23 @@
+/**
+ * @file timer0_driver.h
+ * @brief Header for timer0 driver
+ * 
+ * This module provides policy enforcement for using the timer0 hardware-abstraction layer (HAL).
+ * Using this instead of directly calling the HAL prevents invalid configurations and makes sure
+ * the app explicitly specifies which configurations it wants to use. The app should not just assume
+ * a default configuration.
+ * 
+ * @author Joshua Herer
+ * @date Februrary 2, 2026
+ * @version 1.0
+ */
+
+
 #pragma once
-#include "hal/timer0_enums.h"
+#include <hal/timer0_enums.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "core/error_code.h"
+#include <core/error_code.h>
 
 #define ERROR_TIMER0_UNINIT             (ERROR_MODULE_TIMER0 | 0x01)
 #define ERROR_TIMER0_ENUM_UNSUPPORTED   (ERROR_MODULE_TIMER0 | 0x02)

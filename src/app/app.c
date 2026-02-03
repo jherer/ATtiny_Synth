@@ -10,9 +10,9 @@
  */
 
 
-#include "app/app.h"
-#include "drivers/gpio_driver.h"
-#include "platform/debug.h"
+#include <app/app.h>
+#include <drivers/gpio_driver.h>
+#include <platform/debug.h>
 
 // Add state variables in this struct
 typedef struct {

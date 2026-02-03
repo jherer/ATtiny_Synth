@@ -1,5 +1,5 @@
 #pragma once
-#include "platform/io.h"
+#include <platform/io.h>
 
 #define MASK_WGM0_TCCR0A (1 << WGM01) | (1 << WGM00)
 #define MASK_COM0A (1 << COM0A1) | (1 << COM0A0)

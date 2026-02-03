@@ -1,5 +1,5 @@
-#include "app/app.h"
-#include "system/fault.h"
+#include <app/app.h>
+#include <system/fault.h>
 
 #define CHECK_FAULT
 

@@ -12,7 +12,7 @@
 #pragma once
 #include <stdint.h>
 #include <stdbool.h>
-#include "hal/timer0_enums.h"
+#include <hal/timer0_enums.h>
 
 // CONTROL
 void hal_timer0_set_control_registers(timer0_mode_t mode, timer0_clock_t clock, bool pwm_a, bool pwm_b);

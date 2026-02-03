@@ -1,8 +1,8 @@
-#include "hal/hal_timer1.h"
-#include "platform/io.h"
+#include <hal/hal_timer1.h>
+#include <platform/io.h>
+#include <platform/debug.h>
 #include "bitwise.h"
 #include "masks.h"
-#include "platform/debug.h"
 
 
 static uint8_t _build_control_register_a(bool ctc_bit, uint8_t cs1_bits, uint8_t com1a_bits, bool pwm1a_bit) {

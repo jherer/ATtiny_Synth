@@ -1,8 +1,8 @@
-#include "drivers/timer0_driver.h"
-#include "hal/hal_timer0.h"
+#include <drivers/timer0_driver.h>
+#include <hal/hal_timer0.h>
 #include <stdlib.h>
-#include "core/error_code.h"
-#include "platform/debug.h"
+#include <core/error_code.h>
+#include <platform/debug.h>
 
 typedef struct {
     bool initialized;

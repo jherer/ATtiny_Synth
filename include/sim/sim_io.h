@@ -17,42 +17,32 @@ typedef struct {
     // TIMER1
     uint8_t TCCR1_SIM;
     uint8_t GTCCR_SIM;
+    uint8_t PLLCSR_SIM;
     uint8_t TCNT1_SIM;
     uint8_t OCR1A_SIM;
     uint8_t OCR1B_SIM;
     uint8_t OCR1C_SIM;
-    uint8_t PLLCSR_SIM;
 
     // STATUS / INTERRUPT
     uint8_t SREG_SIM;
     uint8_t TIMSK_SIM;
 
-} sim_io_t;
+} sim_io_state_t;
 
-extern sim_io_t sim_io;
+extern sim_io_state_t sim_io_state;
 
 
-#define PORTB sim_io.PORTB_SIM
-#define PINB sim_io.PINB_SIM
-#define DDRB sim_io.DDRB_SIM
-
-#define TCCR0A sim_io.TCCR0A_SIM
 #define WGM00 0
 #define WGM01 1
 #define COM0B0 4
 #define COM0B1 5
 #define COM0A0 6
 #define COM0A1 7
-#define TCCR0B sim_io.TCCR0B_SIM
 #define CS00 0
 #define CS01 1
 #define CS02 2
 #define WGM02 3
-#define TCNT0 sim_io.TCNT0_SIM
-#define OCR0A sim_io.OCR0A_SIM
-#define OCR0B sim_io.OCR0B_SIM
 
-#define TCCR1 sim_io.TCCR1_SIM
 #define CS10 0
 #define CS11 1
 #define CS12 2
@@ -61,25 +51,16 @@ extern sim_io_t sim_io;
 #define COM1A1 5
 #define PWM1A 6
 #define CTC1 7
-#define GTCCR sim_io.GTCCR_SIM
 #define COM1B0 4
 #define COM1B1 5
 #define PWM1B 6
-#define TCNT1 sim_io.TCNT1_SIM
-#define OCR1A sim_io.OCR1A_SIM
-#define OCR1B sim_io.OCR1B_SIM
-#define OCR1C sim_io.OCR1C_SIM
 
-#define SREG sim_io.SREG_SIM
-#define TIMSK sim_io.TIMSK_SIM
 #define TOIE0 1
 #define TOIE1 2
 #define OCIE0B 3
 #define OCIE0A 4
 #define OCIE1B 5
 #define OCIE1A 6
-
-#define PLLCSR sim_io.PLLCSR_SIM
 
 void sei(void);
 void cli(void);

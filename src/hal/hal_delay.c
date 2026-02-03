@@ -1,5 +1,5 @@
-#include "hal/hal_delay.h"
-#include "platform/io.h"
+#include <hal/hal_delay.h>
+#include <platform/io.h>
 
 void hal_delay_smart_ms(uint16_t ms) {
     #ifdef SIM

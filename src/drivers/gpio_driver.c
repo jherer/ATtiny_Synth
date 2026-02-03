@@ -1,8 +1,8 @@
-#include "drivers/gpio_driver.h"
+#include <drivers/gpio_driver.h>
 #include <stdlib.h>
-#include "hal/hal_gpio.h"
+#include <hal/hal_gpio.h>
 #include <stdlib.h>
-#include "platform/debug.h"
+#include <platform/debug.h>
 
 error_code_t gpio_create(gpio_t *gpio, gpio_id_t gpio_id, gpio_mode_t mode) {
     *gpio = ((gpio_t) {
@@ -75,6 +75,7 @@ error_code_t gpio_write(gpio_t *gpio, bool state) {
 // Checking the state manually can be better than using XOR for toggling
 // Because XOR is not a fully atomic operation
 error_code_t gpio_toggle(gpio_t *gpio) {
+    DEBUG_PRINTLN_HEX("gpio toggle", gpio->gpio_id, DEBUG_LAYER_DRIVERS);
     if (gpio == NULL) {
         return ERROR_GPIO_NULL_POINTER;
     }

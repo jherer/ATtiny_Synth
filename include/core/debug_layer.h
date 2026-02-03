@@ -5,6 +5,7 @@ typedef enum {
     DEBUG_LAYER_APP,
     DEBUG_LAYER_MAIN,
     DEBUG_LAYER_SIM,
+    DEBUG_LAYER_SIM_ISR,
 
     DEBUG_NUM_LAYERS,
 } debug_layer_t;

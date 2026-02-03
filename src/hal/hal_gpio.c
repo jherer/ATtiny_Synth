@@ -1,7 +1,7 @@
-#include "hal/hal_gpio.h"
+#include <hal/hal_gpio.h>
+#include <platform/io.h>
+#include <platform/debug.h>
 #include "bitwise.h"
-#include "platform/io.h"
-#include "platform/debug.h"
 
 // Helper macros to get register addresses
 static volatile uint8_t* PORT_REG(uint8_t port) {

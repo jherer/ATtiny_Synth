@@ -10,8 +10,8 @@
  */
 
 #pragma once
-#include "hal/gpio_ids.h"
-#include "core/error_code.h"
+#include <hal/gpio_ids.h>
+#include <core/error_code.h>
 #include <stdbool.h>
 
 #define ERROR_GPIO_UNINIT           (ERROR_MODULE_GPIO | 0x01)

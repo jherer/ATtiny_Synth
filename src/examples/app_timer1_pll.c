@@ -10,10 +10,10 @@
  */
 
 
-#include "app/app.h"
-#include "drivers/timer1_driver.h"
-#include "drivers/gpio_driver.h"
-#include "platform/debug.h"
+#include <app/app.h>
+#include <drivers/timer1_driver.h>
+#include <drivers/gpio_driver.h>
+#include <platform/debug.h>
 
 typedef struct {
     gpio_t led0;

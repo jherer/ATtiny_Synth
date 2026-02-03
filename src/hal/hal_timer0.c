@@ -1,8 +1,8 @@
-#include "hal/hal_timer0.h"
-#include "platform/io.h"
+#include <hal/hal_timer0.h>
+#include <platform/io.h>
+#include <platform/debug.h>
 #include "bitwise.h"
-#include "hal/masks.h"
-#include "platform/debug.h"
+#include "masks.h"
 
 
 // CONTROL

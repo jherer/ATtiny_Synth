@@ -1,6 +1,6 @@
-#include "system/fault.h"
-#include "hal/hal_gpio.h"
-#include "hal/hal_delay.h"
+#include <system/fault.h>
+#include <hal/hal_gpio.h>
+#include <hal/hal_delay.h>
 
 #define DO_ERROR_BLINK
 static uint8_t const error_led_id = GPIO_B4;

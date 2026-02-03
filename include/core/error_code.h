@@ -12,7 +12,7 @@
  */
 
 #pragma once
-#include "hal/gpio_ids.h"
+#include <hal/gpio_ids.h>
 
 typedef uint8_t error_module_t;
 typedef uint8_t error_code_t;
