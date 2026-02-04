@@ -48,7 +48,7 @@ static uint8_t _get_cs1_bits(timer1_clock_t clock) {
     case TIMER1_CLOCK_2048: return 0b1100;
     case TIMER1_CLOCK_4096: return 0b1101;
     case TIMER1_CLOCK_8192: return 0b1110;
-    case TIMER1_CLOCK_16834: return 0b1111;
+    case TIMER1_CLOCK_16384: return 0b1111;
     case TIMER1_CLOCK_PLL_64: return 0b0001;
     case TIMER1_CLOCK_PLL_32: return 0b0001; // do not prescale, just use low speed pll mode
     default: return 0;

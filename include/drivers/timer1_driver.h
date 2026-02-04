@@ -12,28 +12,15 @@
 #define ERROR_TIMER1_EVENT_BAD_MODE     (ERROR_MODULE_TIMER1 | 0x06)
 
 
-static inline bool timer1_is_mode_valid(timer1_mode_t mode) {
-    return (unsigned)mode < TIMER1_NUM_MODES;
-}
-
-static inline bool timer1_is_clock_valid(timer1_clock_t clock) {
-    return (unsigned)clock < TIMER1_NUM_CLOCKS;
-}
-
+typedef void (*timer1_callback_t)(void);
 
 typedef enum {
     TIMER1_PWM_CHANNEL_A,
     TIMER1_PWM_CHANNEL_B,
     
-    NUM_TIMER1_PWM_CHANNELS,
+    TIMER1_PWM_NUM_CHANNELS,
+    TIMER1_PWM_CHANNEL_INVALID,
 } timer1_pwm_channel_t;
-
-static inline bool timer1_is_pwm_channel_valid(timer1_pwm_channel_t pwm_channel) {
-    return (unsigned)pwm_channel < NUM_TIMER1_PWM_CHANNELS;
-}
-
-
-typedef void (*timer1_callback_t)(void);
 
 typedef enum {
     TIMER1_EVENT_COMPA,
@@ -43,10 +30,6 @@ typedef enum {
     TIMER1_NUM_EVENTS,
     TIMER1_EVENT_INVALID,
 } timer1_event_t;
-
-static inline bool timer1_is_event_valid(timer1_event_t event) {
-    return (unsigned)event < TIMER1_NUM_EVENTS;
-}
 
 
 error_code_t timer1_init(timer1_mode_t mode);

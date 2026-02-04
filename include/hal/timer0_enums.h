@@ -6,7 +6,6 @@ typedef enum {
     TIMER0_MODE_CTC,
     TIMER0_MODE_PWM_FIXED_TOP,
     TIMER0_MODE_PWM_VARIABLE_TOP,
-    
     TIMER0_NUM_MODES,
     TIMER0_MODE_INVALID,
 } timer0_mode_t;
@@ -18,7 +17,6 @@ typedef enum {
     TIMER0_CLOCK_64,
     TIMER0_CLOCK_256,
     TIMER0_CLOCK_1024,
-
     TIMER0_NUM_CLOCKS,
     TIMER0_CLOCK_INVALID,
 } timer0_clock_t;

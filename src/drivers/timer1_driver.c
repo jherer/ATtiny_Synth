@@ -1,5 +1,6 @@
 #include <drivers/timer1_driver.h>
 #include <hal/hal_timer1.h>
+#include "timer1_driver_internal.h"
 #include <stdlib.h>
 #include <core/error_code.h>
 #include <platform/debug.h>
@@ -36,10 +37,6 @@ static void _set_clock(timer1_state_t *s, timer1_clock_t clock) {
     _apply_control_regs(s);
 }
 
-static void _set_top(timer1_state_t *s, timer1_clock_t top) {
-    hal_timer1_set_output_compare_register_c(top);
-}
-
 static void _set_pwm_channel(timer1_state_t *s, timer1_pwm_channel_t pwm_channel, bool enable) {
     _apply_control_regs_clock_off(s);
     switch (pwm_channel) {
@@ -49,7 +46,7 @@ static void _set_pwm_channel(timer1_state_t *s, timer1_pwm_channel_t pwm_channel
     case TIMER1_PWM_CHANNEL_B:
         s->pwm_b = enable;
         break;
-    case NUM_TIMER1_PWM_CHANNELS:
+    case TIMER1_PWM_NUM_CHANNELS:
     default:
         break;
     }
@@ -71,7 +68,7 @@ static void _set_pwm_duty(timer1_state_t *s, timer1_pwm_channel_t pwm_channel, u
     case TIMER1_PWM_CHANNEL_B:
         hal_timer1_set_output_compare_register_b(value);
         break;
-    case NUM_TIMER1_PWM_CHANNELS:
+    case TIMER1_PWM_NUM_CHANNELS:
     default:
         break;
     }
@@ -110,26 +107,6 @@ static void _enable_callback(timer1_state_t *s, timer1_event_t event, bool enabl
     }
 }
 
-static bool _is_initialized(timer1_state_t *s) {
-    return s->initialized;
-}
-
-static inline bool _is_top_variable(timer1_mode_t mode) {
-    return (mode == TIMER1_MODE_CTC) || 
-            (mode == TIMER1_MODE_PWM_VARIABLE_TOP);
-}
-
-static inline bool _is_mode_pwm(timer1_mode_t mode) {
-    return (mode == TIMER1_MODE_PWM_VARIABLE_TOP);
-}
-
-static inline bool _is_event_mode_compatible(timer1_event_t event, timer1_mode_t mode) {
-    bool invalid = (_is_top_variable(mode)) &&
-                    (event == TIMER1_EVENT_OVERFLOW);
-    return !invalid;
-}
-
-
 
 static timer1_state_t state = {0};
 
@@ -138,11 +115,11 @@ static timer1_state_t state = {0};
 
 error_code_t timer1_init(timer1_mode_t mode) {
     DEBUG_PRINTLN("t1 init", DEBUG_LAYER_DRIVERS);
-    if (!timer1_is_mode_valid(mode)) {
+    if (!_timer1_is_mode_valid(mode)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
     bool currently_pwm = ((state.pwm_a) || (state.pwm_b));
-    if (!_is_mode_pwm(state.mode) && currently_pwm) {
+    if (!_timer1_is_mode_pwm(state.mode) && currently_pwm) {
         _cleanup_pwm(&state);
     }
     _set_mode(&state, mode);
@@ -152,25 +129,25 @@ error_code_t timer1_init(timer1_mode_t mode) {
 
 error_code_t timer1_set_top(uint8_t top) {
     DEBUG_PRINTLN_DEC("t1 set top", top, DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!_is_top_variable(state.mode)) {
+    if (!_timer1_is_top_variable(state.mode)) {
         return ERROR_TIMER1_TOP_BAD_MODE;
     }
-    _set_top(&state, top);
+    hal_timer1_set_output_compare_register_c(top);
     return ERROR_OK;
 }
 
 error_code_t timer1_pwm_attach(timer1_pwm_channel_t pwm_channel) {
     DEBUG_PRINTLN("t1 pwm attatch", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_pwm_channel_valid(pwm_channel)) {
+    if (!_timer1_is_pwm_channel_valid(pwm_channel)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
-    if (!_is_mode_pwm(state.mode)) {
+    if (!_timer1_is_mode_pwm(state.mode)) {
         return ERROR_TIMER1_PWM_BAD_MODE;
     }
     _set_pwm_channel(&state, pwm_channel, true);
@@ -179,10 +156,10 @@ error_code_t timer1_pwm_attach(timer1_pwm_channel_t pwm_channel) {
 
 error_code_t timer1_pwm_detach(timer1_pwm_channel_t pwm_channel) {
     DEBUG_PRINTLN("t1 pwm detach", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_pwm_channel_valid(pwm_channel)) {
+    if (!_timer1_is_pwm_channel_valid(pwm_channel)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
     _set_pwm_channel(&state, pwm_channel, false);
@@ -191,13 +168,13 @@ error_code_t timer1_pwm_detach(timer1_pwm_channel_t pwm_channel) {
 
 error_code_t timer1_pwm_set_duty(timer1_pwm_channel_t pwm_channel, uint8_t value) {
     DEBUG_PRINTLN("t1 pwm set duty", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_pwm_channel_valid(pwm_channel)) {
+    if (!_timer1_is_pwm_channel_valid(pwm_channel)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
-    if (!_is_mode_pwm(state.mode)) {
+    if (!_timer1_is_mode_pwm(state.mode)) {
         return ERROR_TIMER1_PWM_BAD_MODE;
     }
 
@@ -207,13 +184,13 @@ error_code_t timer1_pwm_set_duty(timer1_pwm_channel_t pwm_channel, uint8_t value
 
 error_code_t timer1_set_callback(timer1_event_t event, timer1_callback_t callback) {
     DEBUG_PRINTLN("t1 set callback", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_event_valid(event)) {
+    if (!_timer1_is_event_valid(event)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
-    if (!_is_event_mode_compatible(event, state.mode)) {
+    if (!_timer1_is_event_mode_compatible(event, state.mode)) {
         return ERROR_TIMER1_EVENT_BAD_MODE;
     }
     _set_callback(&state, event, callback);
@@ -222,13 +199,13 @@ error_code_t timer1_set_callback(timer1_event_t event, timer1_callback_t callbac
 
 error_code_t timer1_enable_callback(timer1_event_t event, bool enable) {
     DEBUG_PRINTLN("t1 enable callback", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_event_valid(event)) {
+    if (!_timer1_is_event_valid(event)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
-    if (!_is_event_mode_compatible(event, state.mode)) {
+    if (!_timer1_is_event_mode_compatible(event, state.mode)) {
         return ERROR_TIMER1_EVENT_BAD_MODE;
     }
     _enable_callback(&state, event, enable);
@@ -237,10 +214,10 @@ error_code_t timer1_enable_callback(timer1_event_t event, bool enable) {
 
 error_code_t timer1_start_clock(timer1_clock_t clock) {
     DEBUG_PRINTLN("t1 start clock", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_clock_valid(clock)) {
+    if (!_timer1_is_clock_valid(clock)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
     _set_clock(&state, clock);
@@ -249,13 +226,13 @@ error_code_t timer1_start_clock(timer1_clock_t clock) {
 
 error_code_t timer1_set_mode(timer1_mode_t mode) {
     DEBUG_PRINTLN("t1 set mode", DEBUG_LAYER_DRIVERS);
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
-    if (!timer1_is_mode_valid(mode)) {
+    if (!_timer1_is_mode_valid(mode)) {
         return ERROR_TIMER1_ENUM_UNSUPPORTED;
     }
-    if (!_is_mode_pwm(mode)) {
+    if (!_timer1_is_mode_pwm(mode)) {
         _cleanup_pwm(&state);
     }
     _set_mode(&state, mode);
@@ -263,7 +240,7 @@ error_code_t timer1_set_mode(timer1_mode_t mode) {
 }
 
 error_code_t timer1_cleanup(void) {
-    if (!_is_initialized(&state)) {
+    if (!state.initialized) {
         return ERROR_TIMER1_UNINIT;
     }
     DEBUG_PRINTLN("t1 cleanup", DEBUG_LAYER_DRIVERS);

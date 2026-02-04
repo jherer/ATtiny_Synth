@@ -47,6 +47,10 @@
 
     #define SREG sim_io_state.SREG_SIM
     #define TIMSK sim_io_state.TIMSK_SIM
+    
+    #define ADMUX sim_io_state.ADMUX_SIM
+    #define ADCSRA sim_io_state.ADCSRA_SIM
+    #define ADCH sim_io_state.ADCH_SIM
 
 
 

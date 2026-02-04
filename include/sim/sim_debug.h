@@ -1,11 +1,10 @@
 #pragma once
-#include <core/debug_layer.h>
-#include <sim/sim_io.h>
-#include <sim/sim_config.h>
-#include <stdint.h>
-
-
 #ifdef SIM
+    #include <core/debug_layer.h>
+    #include <sim/sim_io.h>
+    #include <sim/sim_config.h>
+    #include <stdint.h>
+
     void _debug_init(void);
     void _debug_print(char *message, debug_layer_t layer);
     void _debug_println(char *message, debug_layer_t layer);

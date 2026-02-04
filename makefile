@@ -7,17 +7,19 @@ MODULES = system services drivers hal platform
 # Source file paths
 SRC_DIRS = $(MODULES:%=src/%)
 SRCS = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
-SRCS += src/examples/app_soft_timer.c # ADD APP SOURCESs
+SRCS += src/examples/example_timer_service.c # ADD APP SOURCESs
 
 # Include directory paths
 INC_DIRS = include
+
+# Build directory in case build not specified
+BUILD_DIR = build
 
 OBJS = $(SRCS:%.c=$(BUILD_DIR)/%.o)
 DEPS = $(OBJS:%.o=%.d)
 
 # Tell the makefile these are command names, not files
 .PHONY: build run clean
-
 
 
 # Compiler flags

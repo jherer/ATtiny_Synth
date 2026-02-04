@@ -1,7 +1,8 @@
-#include <drivers/gpio_driver.h>
+#include <stdbool.h>
+#include <core/error_code.h>
 
 #define ERROR_BUTTON_UNINIT     (ERROR_MODULE_BUTTON | 0x1)
-#define ERROR_BUTTON_ID_CONFLICT (ERROR_MODULE_BUTTON | 0x1)
+#define ERROR_BUTTON_ID_CONFLICT (ERROR_MODULE_BUTTON | 0x2)
 
 typedef void (*button_callback_t)(void);
 
@@ -11,7 +12,6 @@ typedef uint8_t button_id_t;
 typedef enum {
     BTN_EVENT_PRESS,
     BTN_EVENT_RELEASE,
-
     BTN_NUM_EVENTS,
 } button_event_t;
 

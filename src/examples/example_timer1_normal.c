@@ -36,7 +36,7 @@ error_code_t app_init(void) {
     ASSERT_OK(timer1_init(TIMER1_EVENT_OVERFLOW));
     ASSERT_OK(timer1_set_callback(TIMER1_EVENT_OVERFLOW, callback0));
     ASSERT_OK(timer1_enable_callback(TIMER1_EVENT_OVERFLOW, true));
-    ASSERT_OK(timer1_start_clock(TIMER1_CLOCK_16834));
+    ASSERT_OK(timer1_start_clock(TIMER1_CLOCK_16384));
     state.i = 0;
     
     interrupt_enable();

@@ -259,4 +259,9 @@ void _debug_dump_registers(sim_io_state_t *sim) {
     _debug_println("--INTERRUPT--", DEBUG_LAYER_SIM);
     _debug_println_bin("    TIMSK", sim->TIMSK_SIM, DEBUG_LAYER_SIM);
     _debug_println_bin("    SREG", sim->SREG_SIM, DEBUG_LAYER_SIM);
+    _debug_println("--ADC--", DEBUG_LAYER_SIM);
+    _debug_println_bin("    ADMUX", sim->ADMUX_SIM, DEBUG_LAYER_SIM);
+    _debug_println_bin("    ADCSRA", sim->ADCSRA_SIM, DEBUG_LAYER_SIM);
+    _debug_println_bin("    ADCH", sim->ADCH_SIM, DEBUG_LAYER_SIM);
+
 }
