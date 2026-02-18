@@ -7,7 +7,7 @@ MODULES = system services drivers hal platform
 # Source file paths
 SRC_DIRS = $(MODULES:%=src/%)
 SRCS = $(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.c))
-SRCS += src/examples/example_timer_service.c # ADD APP SOURCESs
+SRCS += $(wildcard src/app/*.c) # ADD APP SOURCES
 
 # Include directory paths
 INC_DIRS = include
@@ -52,7 +52,7 @@ endif
 # ----------------------------
 ifeq ($(BUILD), HW)
 CFLAGS += -DHW
-BUILD_DIR 	= build/mcu
+BUILD_DIR 	= build/hardware
 TARGET 		= $(BUILD_DIR)/firmware
 SRCS += src/main_hw.c # Add hardware main to sources
 
@@ -88,6 +88,10 @@ run: $(TARGET).hex build
 	avrdude $(AVRDUDE_FLAGS) -U flash:w:'$<':a
 
 build: $(TARGET).hex
+
+clean:
+	$(RD) $(BUILD_DIR)/*
+
 endif
 
 
@@ -109,6 +113,10 @@ run: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $^ -o $@
+
+clean:
+	$(RD) $(BUILD_DIR)/*
+
 endif
 
 
@@ -117,9 +125,5 @@ $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 -include $(DEPS)
-
-clean:
-	$(RD) $(BUILD_DIR)
-
 
 
